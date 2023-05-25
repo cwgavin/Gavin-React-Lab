@@ -2,29 +2,19 @@
 import React from "react";
 import Input from "./input-component";
 import FruitsSection, { Fruit } from "./fruits-component";
-import { dummyData } from "./dummyData";
 
 export default function Home() {
   const [fruits, setFruits] = React.useState<Fruit[]>([]);
   const [filteredFruits, setFilteredFruits] = React.useState<Fruit[]>([]);
 
   React.useEffect(() => {
-    // fetch(
-    //   "https://cors-anywhere.herokuapp.com/https://www.fruityvice.com/api/fruit/all",
-    //   {
-    //     headers: {
-    //       Origin: "localhost",
-    //     },
-    //   }
-    // )
-    //   .then((res) => res.json())
-    //   .then((json: Fruit[]) => {
-    //     setFruits(json);
-    //     setFilteredFruits(json);
-    //   })
-    //   .catch((err) => console.log(err));
-    setFruits(dummyData);
-    setFilteredFruits(dummyData);
+    fetch("/fruit-api/fruit/all")
+      .then((res) => res.json())
+      .then((json: Fruit[]) => {
+        setFruits(json);
+        setFilteredFruits(json);
+      })
+      .catch((err) => console.log(err));
   }, []);
 
   const onChangeHandler = (event: React.ChangeEvent<HTMLInputElement>) => {
