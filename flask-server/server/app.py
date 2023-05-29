@@ -1,12 +1,16 @@
+import io
 from flask import Flask
 from server.test import predict
+from flask import request
 
 app = Flask("Flask Server")
 
 
-@app.route("/")
+@app.route("/test", methods=["GET", "POST"])
 def hello_world():
-    return predict(app.logger)
+    file = request.files["file"]
+    fileBytes = io.BytesIO(file.read())
+    return predict(fileBytes, app.logger)
 
 
 def main():

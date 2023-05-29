@@ -1,3 +1,4 @@
+from io import BytesIO
 from logging import Logger
 import torch
 from torchvision import models
@@ -11,11 +12,12 @@ ROOT_DIR = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
 os.environ["TORCH_HOME"] = f"{ROOT_DIR}/models"
 
 
-def predict(logger: Logger):
+def predict(imageBytes: BytesIO, logger: Logger):
     resnet = models.resnext50_32x4d(weights=ResNeXt50_32X4D_Weights.DEFAULT)
     resnet.eval()
 
-    img = Image.open(f"{ROOT_DIR}/test_images/dumbbell.jpg")
+    # img = Image.open(f"{ROOT_DIR}/test_images/dumbbell.jpg")
+    img = Image.open(imageBytes)
     transform = transforms.Compose(
         [
             transforms.Resize(256),
