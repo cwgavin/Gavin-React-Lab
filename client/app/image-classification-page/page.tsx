@@ -1,30 +1,48 @@
 "use client";
-import React from "react";
+import React, { useRef, useState } from "react";
 import styles from "./styles.module.scss";
-import Button from "@mui/material/Button";
+import { Button, TextField } from "@mui/material";
 import SendIcon from "@mui/icons-material/Send";
 
 type ClassificationResult = [[string, number]] | null;
 
 export default function ImageClassificationPage() {
-  const [imagePreview, setImagePreview] = React.useState<string | null>(null);
-  const [image, setImage] = React.useState<File | null>(null);
-  const [result, setResult] = React.useState<ClassificationResult>(null);
+  const [imageUrl, setImageUrl] = useState("");
+  const [image, setImage] = useState<File | null>(null);
+  const [result, setResult] = useState<ClassificationResult>(null);
+  const localImageSelector = useRef<HTMLInputElement>(null);
 
-  const onChangeHandler = (e: React.ChangeEvent<HTMLInputElement>) => {
+  const handleLocalFileChange = (e: React.ChangeEvent<HTMLInputElement>) => {
     if (!e.target.files) return;
-    const file = e.target.files[0];
     setResult(null);
-    if (file) {
-      setImagePreview(URL.createObjectURL(file));
-      setImage(file);
+    setImageUrl("");
+    setImage(e.target.files[0]);
+  };
+
+  const handleUrlChange = (e: React.ChangeEvent<HTMLInputElement>) => {
+    const url = e.target.value;
+    localImageSelector.current!.value = "";
+    setImageUrl(url);
+    setResult(null);
+    if (url) {
+      fetch(url)
+        .then((response) => {
+          console.log(response);
+          if (!response.ok) throw new Error();
+          return response.blob();
+        })
+        .then((blob) => {
+          setImage(new File([blob], ""));
+        })
+        .catch(() => {
+          setImage(null);
+        });
     } else {
-      setImagePreview(null);
       setImage(null);
     }
   };
 
-  const uploadImage = () => {
+  const handleUpload = () => {
     if (!image) return;
 
     const data = new FormData();
@@ -43,10 +61,10 @@ export default function ImageClassificationPage() {
 
   return (
     <div className={styles.pageLayout}>
-      {imagePreview && (
+      {image && (
         <img
           className={styles.imagePreview}
-          src={imagePreview}
+          src={URL.createObjectURL(image)}
           alt="image-preview"
         />
       )}
@@ -58,16 +76,26 @@ export default function ImageClassificationPage() {
         </p>
       )}
       <input
-        id="select-image"
+        ref={localImageSelector}
+        id="select-local-image"
         type="file"
         accept="image/*"
-        onChange={onChangeHandler}
+        onChange={handleLocalFileChange}
+      />
+      <TextField
+        variant="outlined"
+        label="Image URL"
+        value={imageUrl}
+        onChange={handleUrlChange}
+        sx={{ "max-width": "500px" }}
       />
       <Button
         type="submit"
         variant="contained"
         endIcon={<SendIcon />}
-        onClick={uploadImage}
+        disabled={image === null}
+        onClick={handleUpload}
+        sx={{ "max-width": "120px" }}
       >
         Upload
       </Button>
