@@ -14,9 +14,9 @@ export default function Home() {
       </div>
 
       <div>
-        <a href="/subpage">
+        <a href="/fruits-page">
           <h2>
-            Subpage <span>-&gt;</span>
+            Fruits List <span>-&gt;</span>
           </h2>
         </a>
         <a href="/image-classification-page">
