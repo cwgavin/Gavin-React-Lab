@@ -1,16 +1,18 @@
 import Image from "next/image";
+import "@fontsource/roboto/300.css";
 
 export default function Home() {
   return (
     <main>
       <div>
         <Image
-          src="/next.svg"
-          alt="Next.js Logo"
-          width={180}
-          height={37}
+          src="/Ice_bear.webp"
+          alt="Ice Bear"
+          width={230}
+          height={150}
           priority
         />
+        <h1 style={{ fontFamily: "Roboto" }}>Gavin's React Lab</h1>
       </div>
 
       <div>

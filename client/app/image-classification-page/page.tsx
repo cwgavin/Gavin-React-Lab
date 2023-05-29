@@ -24,7 +24,7 @@ export default function ImageClassificationPage() {
     localImageSelector.current!.value = "";
     setImageUrl(url);
     setResult(null);
-    if (url) {
+    if (url && url.startsWith("http")) {
       fetch(url)
         .then((response) => {
           console.log(response);
