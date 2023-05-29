@@ -8,6 +8,7 @@ type ClassificationResult = [[string, number]] | null;
 
 export default function ImageClassificationPage() {
   const [imageUrl, setImageUrl] = useState("");
+  const [imageUrlIsValid, setImageUrlIsValid] = useState(true);
   const [image, setImage] = useState<File | null>(null);
   const [result, setResult] = useState<ClassificationResult>(null);
   const localImageSelector = useRef<HTMLInputElement>(null);
@@ -33,8 +34,10 @@ export default function ImageClassificationPage() {
         })
         .then((blob) => {
           setImage(new File([blob], ""));
+          setImageUrlIsValid(true);
         })
         .catch(() => {
+          setImageUrlIsValid(false);
           setImage(null);
         });
     } else {
@@ -61,6 +64,35 @@ export default function ImageClassificationPage() {
 
   return (
     <div className={styles.pageLayout}>
+      <input
+        ref={localImageSelector}
+        id="select-local-image"
+        type="file"
+        accept="image/*"
+        onChange={handleLocalFileChange}
+      />
+      <TextField
+        error={!imageUrlIsValid}
+        helperText={
+          !imageUrlIsValid &&
+          "Can't fetch image from this URL, please try another one."
+        }
+        variant="outlined"
+        label="Image URL"
+        value={imageUrl}
+        onChange={handleUrlChange}
+        sx={{ maxWidth: "500px" }}
+      />
+      <Button
+        type="submit"
+        variant="contained"
+        endIcon={<SendIcon />}
+        disabled={image === null}
+        onClick={handleUpload}
+        sx={{ maxWidth: "120px" }}
+      >
+        Upload
+      </Button>
       {image && (
         <img
           className={styles.imagePreview}
@@ -75,30 +107,6 @@ export default function ImageClassificationPage() {
           {`Confidence: ${Math.round(result[0][1])}%`}
         </p>
       )}
-      <input
-        ref={localImageSelector}
-        id="select-local-image"
-        type="file"
-        accept="image/*"
-        onChange={handleLocalFileChange}
-      />
-      <TextField
-        variant="outlined"
-        label="Image URL"
-        value={imageUrl}
-        onChange={handleUrlChange}
-        sx={{ "max-width": "500px" }}
-      />
-      <Button
-        type="submit"
-        variant="contained"
-        endIcon={<SendIcon />}
-        disabled={image === null}
-        onClick={handleUpload}
-        sx={{ "max-width": "120px" }}
-      >
-        Upload
-      </Button>
     </div>
   );
 }
