@@ -20,7 +20,7 @@ export default function ImageClassificationPage() {
   };
 
   const handleUrlChange = (e: React.ChangeEvent<HTMLInputElement>) => {
-    const url = e.target.value;
+    const url = e.target.value.trim();
     localImageSelector.current!.value = "";
     setImageUrl(url);
     setResult(null);
