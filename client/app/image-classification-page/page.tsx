@@ -1,8 +1,9 @@
 "use client";
 import React, { useRef, useState } from "react";
-import styles from "./styles.module.scss";
+import styles from "./ImageClassificationPage.module.scss";
 import { Button, TextField } from "@mui/material";
 import SendIcon from "@mui/icons-material/Send";
+import Image from "next/image";
 
 type ClassificationResult = [[string, number]] | null;
 
@@ -94,7 +95,7 @@ export default function ImageClassificationPage() {
         Upload
       </Button>
       {image && (
-        <img
+        <Image
           className={styles.imagePreview}
           src={URL.createObjectURL(image)}
           alt="image-preview"
